@@ -1,0 +1,91 @@
+[localstack.aws.provider]
+acm:default = localstack.services.providers:acm
+apigateway:default = localstack.services.providers:apigateway
+cloudformation:default = localstack.services.providers:cloudformation
+cloudwatch:default = localstack.services.providers:cloudwatch
+config:default = localstack.services.providers:awsconfig
+dynamodb:default = localstack.services.providers:dynamodb
+dynamodbstreams:default = localstack.services.providers:dynamodbstreams
+ec2:default = localstack.services.providers:ec2
+es:default = localstack.services.providers:es
+events:default = localstack.services.providers:events
+firehose:default = localstack.services.providers:firehose
+iam:default = localstack.services.providers:iam
+kinesis:default = localstack.services.providers:kinesis
+kms:default = localstack.services.providers:kms
+lambda:asf = localstack.services.providers:awslambda_asf
+lambda:default = localstack.services.providers:awslambda
+lambda:legacy = localstack.services.providers:awslambda_legacy
+lambda:v1 = localstack.services.providers:awslambda_v1
+lambda:v2 = localstack.services.providers:awslambda_v2
+logs:default = localstack.services.providers:logs
+opensearch:default = localstack.services.providers:opensearch
+redshift:default = localstack.services.providers:redshift
+resource-groups:default = localstack.services.providers:resource_groups
+resourcegroupstaggingapi:default = localstack.services.providers:resourcegroupstaggingapi
+route53:default = localstack.services.providers:route53
+route53resolver:default = localstack.services.providers:route53resolver
+s3:asf = localstack.services.providers:s3_asf
+s3:default = localstack.services.providers:s3
+s3:legacy = localstack.services.providers:s3_legacy
+s3:stream = localstack.services.providers:s3_stream
+s3:v1 = localstack.services.providers:s3_v1
+s3:v2 = localstack.services.providers:s3_v2
+s3control:default = localstack.services.providers:s3control
+secretsmanager:default = localstack.services.providers:secretsmanager
+ses:default = localstack.services.providers:ses
+sns:default = localstack.services.providers:sns
+sqs:default = localstack.services.providers:sqs
+ssm:default = localstack.services.providers:ssm
+stepfunctions:default = localstack.services.providers:stepfunctions
+stepfunctions:v1 = localstack.services.providers:stepfunctions_v1
+stepfunctions:v2 = localstack.services.providers:stepfunctions_v2
+sts:default = localstack.services.providers:sts
+support:default = localstack.services.providers:support
+swf:default = localstack.services.providers:swf
+transcribe:default = localstack.services.providers:transcribe
+
+[localstack.cloudformation.resource_providers]
+AWS::IAM::User = localstack.services.iam.resource_providers.aws_iam_user:IAMUserProviderPlugin
+AWS::SSM::Parameter = localstack.services.ssm.resource_providers.aws_ssm_parameter:SSMParameterProviderPlugin
+
+[localstack.hooks.configure_localstack_container]
+_mount_machine_file = localstack.utils.analytics.metadata:_mount_machine_file
+configure_edge_port = localstack.plugins:configure_edge_port
+
+[localstack.hooks.on_infra_ready]
+_run_init_scripts_on_ready = localstack.runtime.init:_run_init_scripts_on_ready
+register_virtual_host_routes = localstack.services.s3.virtual_host:register_virtual_host_routes
+
+[localstack.hooks.on_infra_shutdown]
+_run_init_scripts_on_shutdown = localstack.runtime.init:_run_init_scripts_on_shutdown
+run_shutdown_handlers = localstack.runtime.shutdown:run_shutdown_handlers
+
+[localstack.hooks.on_infra_start]
+_patch_botocore_json_parser = localstack.aws.client:_patch_botocore_json_parser
+_publish_config_as_analytics_event = localstack.runtime.analytics:_publish_config_as_analytics_event
+_publish_container_info = localstack.runtime.analytics:_publish_container_info
+_run_init_scripts_on_start = localstack.runtime.init:_run_init_scripts_on_start
+deprecation_warnings = localstack.plugins:deprecation_warnings
+register_partition_adjusting_proxy_listener = localstack.plugins:register_partition_adjusting_proxy_listener
+validate_configuration = localstack.services.awslambda.plugins:validate_configuration
+
+[localstack.hooks.prepare_host]
+prepare_host_machine_id = localstack.utils.analytics.metadata:prepare_host_machine_id
+
+[localstack.lambda.runtime_executor]
+docker = localstack.services.awslambda.invocation.plugins:DockerRuntimeExecutorPlugin
+
+[localstack.packages]
+awslambda-go-runtime/community = localstack.services.awslambda.plugins:awslambda_go_runtime_package
+awslambda-runtime/community = localstack.services.awslambda.plugins:awslambda_runtime_package
+cloudformation-libs/community = localstack.services.cloudformation.plugins:cloudformation_package
+dynamodb-local/community = localstack.services.dynamodb.plugins:dynamodb_local_package
+elasticsearch/community = localstack.services.es.plugins:elasticsearch_package
+ffmpeg/community = localstack.packages.plugins:ffmpeg_package
+kinesis-mock/community = localstack.services.kinesis.plugins:kinesismock_package
+lambda-java-libs/community = localstack.services.awslambda.plugins:lambda_java_libs
+local-kms/community = localstack.services.kms.plugins:local_kms_package
+opensearch/community = localstack.services.opensearch.plugins:opensearch_package
+stepfunctions-local/community = localstack.services.stepfunctions.plugins:stepfunctions_local_packages
+terraform/community = localstack.packages.plugins:terraform_package
